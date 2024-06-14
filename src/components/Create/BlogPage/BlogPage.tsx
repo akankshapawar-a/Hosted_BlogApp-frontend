@@ -207,7 +207,7 @@ const formatDate = (dateString: string) => {
     </div>
     <div className='space-x-4  w-full  flex  dark:bg-gray-800 '>
     <textarea  name="comments" value={newComment} onChange={(e)=>{setNewComment(e.target.value)}}
-    className=" w-10/12 sm:p-4 ss:p-3 text-lg  dark:bg-gray-800 " placeholder='comment Here... '></textarea>
+    className=" w-10/12 sm:p-4 ss:p-3 text-lg  dark:bg-gray-800 dark:text-white" placeholder='comment Here... '></textarea>
     <button  onClick={HandleComment} className=' bg-blue-500 rounded-md px-6  h-10 text-white'>Post</button>
     </div>
    </div>

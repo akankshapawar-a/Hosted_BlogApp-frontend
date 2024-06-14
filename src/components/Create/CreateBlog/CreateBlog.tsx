@@ -1,7 +1,8 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { categories } from '../../../Data/data';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CreateBlog = () => {
   const [title, setTitle] = useState('');
@@ -10,6 +11,7 @@ const CreateBlog = () => {
   const [category, setCategory] = useState('');
   const navigate = useNavigate();
   const [isLoading , setLoading]=useState(false);
+ 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
@@ -41,14 +43,19 @@ setLoading(true);
       const responseData = await response.json();
       if (response.ok) {
         console.log(responseData);
-        toast('Blog Created Successfully');
+        // toast('Blog Created Successfully');
+        toast.success('Blog created successfully!');
+
         navigate('/home');
       } else {
+        toast.error('Failed to create a blog. Please try again.');
         throw new Error('Failed to create blog');
       }
     } catch (error) {
       console.error('Error uploading image:', error);
-      toast.error('Failed to create blog');
+      toast.error('Error uploading image:');
+
+
       alert("File Size is too large it should be less than 5MB ");
 
     } finally{
@@ -58,6 +65,8 @@ setLoading(true);
 
   return (
     <div className=' dark:bg-gray-800 dark:h-screen'>
+      <ToastContainer />
+
       <div className='relative dark:bg-gray-800 '>
 
         {file && file.type.startsWith('image/') ? (

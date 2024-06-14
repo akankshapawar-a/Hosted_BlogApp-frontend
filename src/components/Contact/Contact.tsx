@@ -1,11 +1,15 @@
-import React, { useRef } from 'react'
+import React, { useRef,useState } from 'react'
 import emailjs from 'emailjs-com';
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Contact = () => {
   const email = "akankshaspawar11@gmail.com";
   const navigate=useNavigate();
+  const [isLoading , setLoading]=useState(false);
+
   const formRef = useRef<HTMLFormElement>(null);
   // function sendEmail(event: React.FormEvent<HTMLFormElement>) {
   //   event.preventDefault();
@@ -36,41 +40,63 @@ const Contact = () => {
   
   function sendEmail(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setLoading(true);
+
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const data: Record<string, string> = {};
       formData.forEach((value, key) => {
         data[key] = value as string;
       });
-  
+      if(data.name ||data.email || data.content){
+      
       emailjs.send(
         "service_bn25gvh",
         "template_d9q528i",
         data,
         "aTU2AKHcfOn7qsKfL"
       ).then((response) => {
-        console.log('Email sent successfully:', response);
-        // Reset form after successful submission
-        if (formRef.current) {
-          formRef.current.reset();
-        }
+       
+       console.log('Email sent successfully:', response);
+       toast.success('Email sent successfully!');
+
+       // Reset form after successful submission
+       setLoading(false);
+      
+       if (formRef.current) {
+         formRef.current.reset();
+       }
+     
       }, (error) => {
         console.error('Email sending failed:', error);
+        toast.error('Email sending failed. Please try again.');
+
+        setLoading(false);
       });
+    }
+    else{
+      toast.error('Please enter all field required');
+      setLoading(false);
+    }
     } else {
       console.error("Form reference is null.");
+      setLoading(false);
     }
+  
+  
   }
   
 
   
   return (
     <div className=' dark:bg-gray-800 h-screen space-y-6'>
+          <ToastContainer />
+
+
       <div className='relative  dark:bg-gray-800 ' >
 
         <img
-          src="http://mrtaba.ir/image/bg2.jpg"
-
+           src="http://mrtaba.ir/image/bg2.jpg"
           className='w-full h-80'
           alt="image"
 
@@ -136,21 +162,22 @@ const Contact = () => {
                 <form  className="p-6 flex flex-col justify-center" ref={formRef} onSubmit={sendEmail}>
                     <div className="flex flex-col">
                         <label htmlFor="name" className="hidden">Full Name</label>
-                        <input type="name" name="name" id="name" placeholder="Full Name" className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
+                        <input type="name" name="name" id="name" placeholder="Full Name" className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 dark:text-white font-semibold focus:border-indigo-500 focus:outline-none"/>
                     </div>
 
                     <div className="flex flex-col mt-2">
                         <label htmlFor="email" className="hidden">Email</label>
-                        <input type="email" name="email" id="email" placeholder="Email" className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
+                        <input type="email" name="email" id="email" placeholder="Email" className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 dark:text-white text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
                     </div>
 
                     <div className="flex flex-col mt-2">
                         <label htmlFor="message" className="hidden">Message</label>
-                        <textarea name="message" id="message" placeholder="Your Message" className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"></textarea>
+                        <textarea name="message" id="message" placeholder="Your Message" className="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 dark:text-white text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"></textarea>
                     </div>
 
                     <button type="submit" className="md:w-32 bg-indigo-500  text-white font-bold py-3 px-6 rounded-lg mt-3 hover:bg-indigo-900 transition ease-in-out duration-300">
-                        Submit
+                    {isLoading ? 'Sending...' : 'Send'}
+
                     </button>
                 </form>
             </div>

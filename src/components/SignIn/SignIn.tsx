@@ -1,20 +1,24 @@
 import React, { useState ,  FormEvent, ChangeEvent } from "react";
 import {Link} from 'react-router-dom'
-import toast from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const SignIn= ({onLogin}) => {
   const navigate=useNavigate();
   const [fromData, setFromdata] = useState({
        email:"",password:""
   });
-
+  
 const HandleChange=(e:ChangeEvent<HTMLInputElement>)=>{
   setFromdata({ ...fromData , [e.target.name]:e.target.value});
 }
   const Signin = async(e: FormEvent)=>{
     e.preventDefault();
     const {email,password}=fromData;
+    if (!email || !password) {
+      toast.error("Please fill out all fields");
+      return;
+    }
     try {
       const response = await fetch('https://blogapp-backend-roos.onrender.com/api/login',
       {
@@ -49,13 +53,14 @@ const HandleChange=(e:ChangeEvent<HTMLInputElement>)=>{
   
 
     } catch (error) {
-      alert("invalid email or password")
+      alert("something wents wrong")
       toast.error("error while fetch the data");
     }
   }
   return (
     <>
       <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+      <ToastContainer />
         <div className="max-w-screen-lg m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
           <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
            

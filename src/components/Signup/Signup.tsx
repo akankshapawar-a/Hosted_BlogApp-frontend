@@ -1,7 +1,9 @@
 import React, { useState ,  FormEvent, ChangeEvent, useEffect } from "react";
 import {Link} from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
+
 const SignUp = () => {
 
 
@@ -17,6 +19,11 @@ const HandleChange=(e:ChangeEvent<HTMLInputElement>)=>{
   const SignUp = async(e: FormEvent)=>{
     e.preventDefault();
     const {username ,email,password}=fromData;
+    if (!username || !email || !password) {
+      toast.error("Please fill out all fields");
+      return;
+    }
+
     try {
       const response = await fetch('https://blogapp-backend-roos.onrender.com/api/Signup',
       {
@@ -44,6 +51,7 @@ const HandleChange=(e:ChangeEvent<HTMLInputElement>)=>{
   }
   return (
 <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+<ToastContainer />
 <div className="max-w-screen-lg m-0  sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
   <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
    
